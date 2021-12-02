@@ -70,19 +70,24 @@ if __name__ == "__main__":
     import torch.optim as opt
     from torch.utils.data import DataLoader
 
+    print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    
     Logger.init("/tmp", "test.txt", True, log_freq=10)
 
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
 
     GPTTokenizer = create_tokenizer_rep("GPTTokenizer", tokenizer)
+    print("FINISHED TOKENIZER")
 
     model = GPTModel(device, tokenizer, "gpt2")
     opt = opt.Adam(model.parameters(), lr=5e-5)
 
+    print("FINISHED MODEL")
     train_dataset = SingleCommonGen(GPTTokenizer, "train")
     test_dataset = CommonGenEval(GPTTokenizer)
+
+    print("FINISHED DATASETS")
 
     train_dl = DataLoader(
         train_dataset,
